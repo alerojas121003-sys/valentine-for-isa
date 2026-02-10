@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine 💖</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background-color: #ffb6c1;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .screen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.25);
+      margin-bottom: 50px;
+      z-index: 2;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 40px;
+      z-index: 2;
+      transition: opacity 0.6s ease;
+    }
+
+    button {
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 40px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    #yesBtn {
+      background-color: #ff4d6d;
+      color: white;
+      box-shadow: 0 8px 20px rgba(255, 77, 109, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.1);
+    }
+
+    #noBtn {
+      background-color: white;
+      color: #ff4d6d;
+      position: relative;
+    }
+
+    .fade-out {
+      opacity: 0;
+      transform: scale(1.4);
+    }
+
+    /* Floating background hearts */
+    .heart {
+      position: absolute;
+      font-size: 24px;
+      color: rgba(255, 0, 100, 0.4);
+      animation: float 6s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      from { transform: translateY(100vh); }
+      to { transform: translateY(-10vh); }
+    }
+
+    /* Infinite confetti */
+    .confetti {
+      position: absolute;
+      font-size: 20px;
+      animation: confetti-fall linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes confetti-fall {
+      from {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0.8;
+      }
+    }
+
+    /* Name hearts */
+    .name-heart {
+      position: absolute;
+      font-size: 22px;
+      animation: pop-in 0.6s ease forwards;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes pop-in {
+      to {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen 1 -->
+  <div class="screen" id="screen1">
+    <h1 id="question">Isa, do you want to be my Valentine? 💘</h1>
+    <div class="buttons">
+      <button id="yesBtn">Yes</button>
+      <button id="noBtn">No</button>
+    </div>
+  </div>
+
+  <!-- Screen 2 -->
+  <div class="screen" id="screen2" style="display:none;">
+    <h1>
+      Slayyyy 💅💖<br>
+      See you Saturday for our first Valentine’s together
+    </h1>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const screen1 = document.getElementById('screen1');
+    const screen2 = document.getElementById('screen2');
+    const question = document.getElementById('question');
+    const buttons = document.querySelector('.buttons');
+
+    const noTexts = [
+      "No",
+      "¿Segura? 😳",
+      "Piénsalo bien 💭",
+      "Última oportunidad ⏳",
+      "Isa… 👀",
+      "Eso no se puede 😅",
+      "Nice try 😏",
+      "JAJA no 😈",
+      "No funciona",
+      "Casi… pero no 💖"
+    ];
+
+    let firstTime = true;
+    let confettiInterval;
+
+    noBtn.addEventListener('mouseenter', () => {
+      if (!firstTime) {
+        noBtn.innerText = noTexts[Math.floor(Math.random() * noTexts.length)];
+      }
+      firstTime = false;
+
+      const x = Math.random() * (window.innerWidth - 120);
+      const y = Math.random() * (window.innerHeight - 60);
+
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    });
+
+    yesBtn.addEventListener('click', () => {
+      question.classList.add('fade-out');
+      buttons.classList.add('fade-out');
+
+      drawNameWithHearts();
+      startInfiniteConfetti();
+
+      setTimeout(() => {
+        screen1.style.display = 'none';
+        screen2.style.display = 'flex';
+      }, 1400);
+    });
+
+    function startInfiniteConfetti() {
+      if (confettiInterval) return;
+
+      confettiInterval = setInterval(() => {
+        for (let i = 0; i < 6; i++) {
+          const confetti = document.createElement('div');
+          confetti.classList.add('confetti');
+          confetti.innerHTML = '💖';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.fontSize = Math.random() * 14 + 18 + 'px';
+          confetti.style.animationDuration = Math.random() * 3 + 4 + 's';
+          document.body.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), 8000);
+        }
+      }, 300);
+    }
+
+    function drawNameWithHearts() {
+      const pattern = [
+        [45,20],[45,25],[45,30],[45,35],[45,40],
+        [50,20],[55,20],[60,20],[50,25],[50,30],[55,30],[60,30],[60,35],[50,40],[55,40],[60,40],
+        [65,40],[70,35],[75,40],[65,30],[75,30],[65,20],[75,20],[70,20]
+      ];
+
+      pattern.forEach((pos, i) => {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.classList.add('name-heart');
+          heart.innerHTML = '💖';
+          heart.style.left = pos[0] + 'vw';
+          heart.style.top = pos[1] + 'vh';
+          document.body.appendChild(heart);
+        }, i * 80);
+      });
+    }
+
+    // Background floating hearts
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.innerHTML = '💗';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = Math.random() * 20 + 20 + 'px';
+      heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+
+    setInterval(createHeart, 300);
+  </script>
+
+</body>
+</html>
